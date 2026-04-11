@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Exo 2', sans-serif; background: #0a0818; color: #e8e4ff; min-height: 100vh; overflow-x: hidden; }
+  .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s); }
+  @keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+  .container { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 40px 24px 60px; }
+
+  .header { text-align: center; margin-bottom: 48px; }
+  .logo-badge { display: inline-block; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 4px; color: #a78bfa; text-transform: uppercase; border: 1px solid rgba(167,139,250,0.3); padding: 6px 20px; border-radius: 20px; margin-bottom: 20px; background: rgba(167,139,250,0.05); }
+  .main-title { font-family: 'Rajdhani', sans-serif; font-size: clamp(36px, 6vw, 72px); font-weight: 700; letter-spacing: 2px; background: linear-gradient(135deg, #fff 0%, #c4b5fd 50%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; line-height: 1.1; }
+  .subtitle { font-size: 16px; color: #94a3b8; font-weight: 300; letter-spacing: 0.5px; }
+
+  .section-title { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 1px; color: #c4b5fd; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(196,181,253,0.3), transparent); }
+
+  .glossary { background: rgba(255,255,255,0.02); border: 1px solid rgba(167,139,250,0.2); border-radius: 16px; padding: 28px; margin-bottom: 40px; }
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-top: 12px; }
+  .def-item { padding: 12px 14px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+  .def-term { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: #c4b5fd; margin-bottom: 3px; }
+  .def-desc { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+
+  /* CALC BOX */
+  .calc-box { background: rgba(167,139,250,0.04); border: 1px solid rgba(167,139,250,0.15); border-radius: 14px; padding: 20px 24px; margin-bottom: 36px; }
+  .calc-box p { font-size: 13px; color: #94a3b8; line-height: 1.8; }
+  .calc-box strong { color: #c4b5fd; }
+  .calc-box code { font-family: monospace; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; color: #e2d9ff; font-size: 12px; }
+
+  /* TABLE */
+  .ranks-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-bottom: 48px; }
+  .ranks-table thead tr th { font-family: 'Rajdhani', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #64748b; font-weight: 600; padding: 6px 14px; text-align: left; }
+  .ranks-table thead tr th.center { text-align: center; }
+  .ranks-table thead tr th:last-child { text-align: right; }
+
+  .rank-row { background: rgba(255,255,255,0.025); border-radius: 12px; transition: background 0.2s, transform 0.15s; }
+  .rank-row:hover { background: rgba(255,255,255,0.05); transform: translateX(3px); }
+  .rank-row td { padding: 14px; vertical-align: middle; }
+  .rank-row td:first-child { border-left: 3px solid var(--accent); border-radius: 12px 0 0 12px; padding-left: 18px; }
+  .rank-row td:last-child { border-radius: 0 12px 12px 0; text-align: right; }
+  .rank-row td.center { text-align: center; }
+
+  .rank-name-cell { display: flex; align-items: center; gap: 12px; }
+  .rank-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .rank-label { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .rank-desc { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  .prv-badge { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 3px 10px; font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: #e2d9ff; }
+  .vol-cell { font-family: 'Rajdhani', sans-serif; font-size: 14px; color: #94a3b8; }
+  .vol-cell span { display: block; font-size: 11px; color: #475569; }
+
+  .aa-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .aa-number { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .aa-label { font-size: 9px; color: #475569; letter-spacing: 1px; text-transform: uppercase; }
+  .aa-breakdown { font-size: 10px; color: #475569; margin-top: 2px; font-style: italic; }
+
+  .conditions-inline { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cond-pill { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 4px 10px; font-size: 12px; color: #cbd5e1; white-space: nowrap; }
+  .cond-pill .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .cond-note { font-size: 11px; color: #475569; font-style: italic; margin-top: 5px; }
+
+  .reward-cell { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+  .r-aa { --accent: #818cf8; }
+  .r-qa { --accent: #a78bfa; }
+  .r-ma { --accent: #06b6d4; }
+  .r-s1 { --accent: #22c55e; }
+  .r-s2 { --accent: #eab308; }
+  .r-s3 { --accent: #f97316; }
+  .r-s4 { --accent: #ef4444; }
+  .r-s5 { --accent: #e879f9; }
+  .r-s6 { --accent: #94a3b8; }
+  .r-s7 { --accent: #d4a76a; }
+
+  .total-bar { background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.2); border-radius: 14px; padding: 20px 28px; margin-bottom: 48px; }
+  .total-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin-top: 14px; }
+  .total-item { text-align: center; background: rgba(255,255,255,0.02); border-radius: 10px; padding: 12px 8px; border: 1px solid rgba(255,255,255,0.05); }
+  .total-num { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; line-height: 1; }
+  .total-lbl { font-size: 10px; color: #64748b; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 4px; }
+
+  .disclaimer { text-align: center; font-size: 11px; color: #475569; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-badge">✦ NEXTSTAR PLATFORM ✦</div>
+    <h1 class="main-title">RÉCOMPENSES DE RANG</h1>
+    <p class="subtitle">Récompenses mensuelles de leadership basées sur une activité de trading vérifiée</p>
+  </div>
+
+  <!-- GLOSSARY -->
+  <div class="glossary">
+    <div class="section-title" style="margin-bottom:12px">Définitions clés</div>
+    <div class="glossary-grid">
+      <div class="def-item"><div class="def-term">1 RV = 1 LOT</div><div class="def-desc">1 lot tradé par vos clients référés chez le courtier</div></div>
+      <div class="def-item"><div class="def-term">PRV</div><div class="def-desc">Volume de rang personnel</div></div>
+      <div class="def-item"><div class="def-term">RV+</div><div class="def-desc">Volume équipe la plus forte</div></div>
+      <div class="def-item"><div class="def-term">RV−</div><div class="def-desc">Volume équipe la plus faible</div></div>
+      <div class="def-item"><div class="def-term">AA</div><div class="def-desc">Active Affiliate — licence Premium + dépôt 300$ + 2 lots tradés</div></div>
+      <div class="def-item"><div class="def-term">Binaire</div><div class="def-desc">2 branches : côté gauche et côté droit</div></div>
+    </div>
+  </div>
+
+  <!-- CALC LOGIC -->
+  <div class="calc-box">
+    <div class="section-title" style="margin-bottom:10px;font-size:16px">Logique de calcul du nombre d'AA minimum</div>
+    <p>
+      <strong>AA</strong> = 1 personne active (lui-même compte comme AA dans le réseau au-dessus).<br>
+      <strong>QA</strong> = lui-même (AA) + 1 AA côté gauche + 1 AA côté droit → <code>3 AA au total</code><br>
+      <strong>MA</strong> = lui-même (AA) + 1 QA gauche + 1 QA droite → chaque QA = 3 AA → <code>1 + 3 + 3 = 7 AA</code><br>
+      <strong>Star 1</strong> = lui-même + 1 MA gauche + 1 MA droite → chaque MA = 7 AA → <code>1 + 7 + 7 = 15 AA</code><br>
+      <strong>Star 2</strong> = lui-même + 1 S1 gauche + 1 S1 droite → chaque S1 = 15 AA → <code>1 + 15 + 15 = 31 AA</code><br>
+      Et ainsi de suite : chaque rang = <strong>2× le rang précédent + 1</strong> (structure binaire complète).
+    </p>
+  </div>
+
+  <!-- MAIN TABLE -->
+  <div class="section-title">Détail de chaque rang</div>
+
+  <table class="ranks-table">
+    <thead>
+      <tr>
+        <th style="width:17%">Rang</th>
+        <th class="center" style="width:6%">PRV</th>
+        <th class="center" style="width:8%">RV+</th>
+        <th class="center" style="width:8%">RV−</th>
+        <th class="center" style="width:13%">AA min. total</th>
+        <th style="width:35%">Conditions de structure</th>
+        <th style="width:13%">Récompense</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- ACTIVE AFFILIATE -->
+      <tr class="rank-row r-aa">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">Active Affiliate</div><div class="rank-desc">Statut de base</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">—</span></td>
+        <td class="center"><div class="vol-cell">—<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">—<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">1</div>
+            <div class="aa-label">lui-même</div>
+            <div class="aa-breakdown">lui-même = 1 AA</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#818cf8"></span>Licence Premium</span>
+            <span class="cond-pill"><span class="dot" style="background:#818cf8"></span>Dépôt 300$</span>
+            <span class="cond-pill"><span class="dot" style="background:#818cf8"></span>2 lots tradés</span>
+          </div>
+        </td>
+        <td><span class="reward-cell">—</span></td>
+      </tr>
+
+      <!-- QUALIFIED AFFILIATE -->
+      <tr class="rank-row r-qa">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">Qualified Affiliate</div><div class="rank-desc">1er rang rémunéré</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">2</span></td>
+        <td class="center"><div class="vol-cell">50<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">25<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">3</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">lui + 1 G + 1 D</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#a78bfa"></span>1 AA perso · côté gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#a78bfa"></span>1 AA perso · côté droit</span>
+          </div>
+          <div class="cond-note">Filleuls directs obligatoires — lui-même + 2 AA = 3 AA</div>
+        </td>
+        <td><span class="reward-cell">200 $</span></td>
+      </tr>
+
+      <!-- MASTER AFFILIATE -->
+      <tr class="rank-row r-ma">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">Master Affiliate</div><div class="rank-desc">Structure en profondeur</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">3</span></td>
+        <td class="center"><div class="vol-cell">200<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">100<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">7</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">1 + 3 + 3</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#06b6d4"></span>1 QA dans branche gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#06b6d4"></span>1 QA dans branche droite</span>
+          </div>
+          <div class="cond-note">lui (1 AA) + QA gauche (3 AA) + QA droit (3 AA) = 7 AA — QA pas obligatoirement en direct</div>
+        </td>
+        <td><span class="reward-cell">800 $</span></td>
+      </tr>
+
+      <!-- STAR 1 -->
+      <tr class="rank-row r-s1">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">⭐ Star 1</div><div class="rank-desc">Réseau avec profondeur</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">5</span></td>
+        <td class="center"><div class="vol-cell">600<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">300<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">15</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">1 + 7 + 7</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#22c55e"></span>1 MA dans branche gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#22c55e"></span>1 MA dans branche droite</span>
+          </div>
+          <div class="cond-note">lui (1) + MA gauche (7 AA) + MA droit (7 AA) = 15 AA</div>
+        </td>
+        <td><span class="reward-cell">2 200 $</span></td>
+      </tr>
+
+      <!-- STAR 2 -->
+      <tr class="rank-row r-s2">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">⭐⭐ Star 2</div><div class="rank-desc">Organisation élargie</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">10</span></td>
+        <td class="center"><div class="vol-cell">1 500<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">1 000<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">31</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">1 + 15 + 15</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#eab308"></span>1 Star 1 dans branche gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#eab308"></span>1 Star 1 dans branche droite</span>
+          </div>
+          <div class="cond-note">lui (1) + S1 gauche (15 AA) + S1 droit (15 AA) = 31 AA</div>
+        </td>
+        <td><span class="reward-cell">7 000 $</span></td>
+      </tr>
+
+      <!-- STAR 3 -->
+      <tr class="rank-row r-s3">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">⭐⭐⭐ Star 3</div><div class="rank-desc">Duplication avancée</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">15</span></td>
+        <td class="center"><div class="vol-cell">3 000<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">2 500<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">63</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">1 + 31 + 31</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#f97316"></span>2 Star 2 dans branche gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#f97316"></span>2 Star 2 dans branche droite</span>
+          </div>
+          <div class="cond-note">lui (1) + 2×S2 gauche (2×31) + 2×S2 droit (2×31) → structure: 1 + 31 + 31 = 63 AA</div>
+        </td>
+        <td><span class="reward-cell">17 000 $</span></td>
+      </tr>
+
+      <!-- STAR 4 -->
+      <tr class="rank-row r-s4">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">⭐×4 Star 4</div><div class="rank-desc">Leadership confirmé</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">20</span></td>
+        <td class="center"><div class="vol-cell">8 000<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">6 000<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">127</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">1 + 63 + 63</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#ef4444"></span>2 Star 3 dans branche gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#ef4444"></span>2 Star 3 dans branche droite</span>
+          </div>
+          <div class="cond-note">lui (1) + S3 gauche (63 AA) + S3 droit (63 AA) = 127 AA</div>
+        </td>
+        <td><span class="reward-cell">40 000 $</span></td>
+      </tr>
+
+      <!-- STAR 5 -->
+      <tr class="rank-row r-s5">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">⭐×5 Star 5</div><div class="rank-desc">Élite</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">25</span></td>
+        <td class="center"><div class="vol-cell">20 000<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">15 000<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">255</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">1 + 127 + 127</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#e879f9"></span>3 Star 4 dans branche gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#e879f9"></span>3 Star 4 dans branche droite</span>
+          </div>
+          <div class="cond-note">lui (1) + S4 gauche (127 AA) + S4 droit (127 AA) = 255 AA</div>
+        </td>
+        <td><span class="reward-cell">80 000 $</span></td>
+      </tr>
+
+      <!-- STAR 6 -->
+      <tr class="rank-row r-s6">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">⭐×6 Star 6</div><div class="rank-desc">Super Élite</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">30</span></td>
+        <td class="center"><div class="vol-cell">40 000<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">25 000<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">511</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">1 + 255 + 255</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#94a3b8"></span>3 Star 5 dans branche gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#94a3b8"></span>3 Star 5 dans branche droite</span>
+          </div>
+          <div class="cond-note">lui (1) + S5 gauche (255 AA) + S5 droit (255 AA) = 511 AA</div>
+        </td>
+        <td><span class="reward-cell">150 000 $</span></td>
+      </tr>
+
+      <!-- STAR 7 -->
+      <tr class="rank-row r-s7">
+        <td>
+          <div class="rank-name-cell"><div class="rank-dot"></div>
+            <div><div class="rank-label">⭐×7 Star 7</div><div class="rank-desc">Rang suprême</div></div>
+          </div>
+        </td>
+        <td class="center"><span class="prv-badge">35</span></td>
+        <td class="center"><div class="vol-cell">75 000<span>lots</span></div></td>
+        <td class="center"><div class="vol-cell">50 000<span>lots</span></div></td>
+        <td class="center">
+          <div class="aa-cell">
+            <div class="aa-number">1 023</div>
+            <div class="aa-label">AA minimum</div>
+            <div class="aa-breakdown">1 + 511 + 511</div>
+          </div>
+        </td>
+        <td>
+          <div class="conditions-inline">
+            <span class="cond-pill"><span class="dot" style="background:#d4a76a"></span>4 Star 6 dans branche gauche</span>
+            <span class="cond-pill"><span class="dot" style="background:#d4a76a"></span>4 Star 6 dans branche droite</span>
+          </div>
+          <div class="cond-note">lui (1) + S6 gauche (511 AA) + S6 droit (511 AA) = 1 023 AA</div>
+        </td>
+        <td><span class="reward-cell">300 000 $</span></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- TOTALS SUMMARY -->
+  <div class="section-title">Récapitulatif — AA minimum par rang</div>
+  <div class="total-bar">
+    <div style="font-size:13px;color:#64748b;margin-bottom:4px">Chaque rang = 2× le rang précédent + 1 (arbre binaire complet)</div>
+    <div class="total-grid">
+      <div class="total-item"><div class="total-num" style="color:#818cf8">1</div><div class="total-lbl">Active Aff.</div></div>
+      <div class="total-item"><div class="total-num" style="color:#a78bfa">3</div><div class="total-lbl">Qualified Aff.</div></div>
+      <div class="total-item"><div class="total-num" style="color:#06b6d4">7</div><div class="total-lbl">Master Aff.</div></div>
+      <div class="total-item"><div class="total-num" style="color:#22c55e">15</div><div class="total-lbl">Star 1</div></div>
+      <div class="total-item"><div class="total-num" style="color:#eab308">31</div><div class="total-lbl">Star 2</div></div>
+      <div class="total-item"><div class="total-num" style="color:#f97316">63</div><div class="total-lbl">Star 3</div></div>
+      <div class="total-item"><div class="total-num" style="color:#ef4444">127</div><div class="total-lbl">Star 4</div></div>
+      <div class="total-item"><div class="total-num" style="color:#e879f9">255</div><div class="total-lbl">Star 5</div></div>
+      <div class="total-item"><div class="total-num" style="color:#94a3b8">511</div><div class="total-lbl">Star 6</div></div>
+      <div class="total-item"><div class="total-num" style="color:#d4a76a">1 023</div><div class="total-lbl">Star 7</div></div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    Les exemples présentés sont à titre illustratif uniquement. Les nombres d'AA indiqués sont des minimums théoriques basés sur une structure binaire parfaitement équilibrée. En pratique, le réseau réel peut contenir davantage de membres. Toutes les récompenses sont soumises à une activité de trading vérifiée et au respect des règles de la plateforme NEXTSTAR. Aucun revenu n'est garanti.
+  </div>
+
+</div>
+
+<script>
+  const s = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const el = document.createElement('div');
+    el.className = 'star';
+    el.style.cssText = `top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*5}s;width:${Math.random()>0.8?3:2}px;height:${Math.random()>0.8?3:2}px;`;
+    s.appendChild(el);
+  }
+</script>
+</body>
+</html>
